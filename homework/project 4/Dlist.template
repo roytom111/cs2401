@@ -1,0 +1,238 @@
+
+using namespace std;
+#include <iostream>
+
+template <class T>
+dlist<T>::dlist(const T &other)
+{
+  if (other.head == NULL)
+  {
+    head = NULL;
+  }
+
+  else
+  {
+    dnode<T> *sptr, *dptr;
+    head = tail = new dnode<T>(other.head->data());
+    sptr = other.head->next();
+    dptr = tail;
+    while (dptr->set_next(new dnode<T>(sptr->data(), dptr)))
+      ;
+    {
+      tail = dptr = dptr->next();
+      sptr = sptr->next();
+    }
+    delete sptr;
+  }
+}
+template <class T>
+dlist<T> dlist<T>::operator=(const T &other)
+{
+  if (this == other)
+  {
+    return *this;
+  }
+
+  if (other.head == NULL)
+  {
+    head = NULL;
+  }
+
+  else
+  {
+    dnode<T> *sptr, *dptr;
+    head = tail = new dnode<T>(other.head->data());
+    sptr = other.head->next();
+    dptr = tail;
+    while (sptr != NULL)
+    {
+      dptr->set_next(new dnode<T>(sptr->data(), dptr));
+      tail = dptr = dptr->next();
+      sptr = sptr->next();
+    }
+
+    delete sptr;
+  }
+}
+template <class T>
+dlist<T>::~dlist()
+{
+  dnode<T> *rmptr;
+
+  while (head != NULL)
+  {
+    rmptr = head;
+    head = head->next();
+    delete rmptr;
+  }
+}
+template <class T>
+void dlist<T>::insert_before(iterator &object, T item)
+{
+
+  dnode<T> *tmp = object.current;
+
+  if (count == 1)
+  {
+    front_insert(item);
+    return;
+  }
+
+  if (object.current == head)
+  {
+    dnode<T> *cursor = head;
+    object.current = new dnode<T>(item, NULL, tmp);
+    head = object.current;
+  }
+
+  else
+  {
+    object.current = new dnode<T>(item, tmp->previous(), tmp);
+    object.current->next()->set_previous(object.current);
+    object.current->previous()->set_next(object.current);
+  }
+  count++;
+}
+template <class T>
+void dlist<T>::front_insert(T item)
+{
+  dnode<T>* cursor = head;
+  if (head == NULL)
+  {
+    std::cout << "front_insert" << std::endl;
+    head = new dnode<T>(item, NULL, NULL);
+    tail = head;
+    count++;
+  }
+
+  else
+  {
+    head->set_previous(new dnode<T>(item, NULL, cursor));
+    head = head->previous();
+    count++;
+  }
+}
+template <class T>
+void dlist<T>::rear_insert(T item)
+{
+  if (head == NULL)
+  {
+    cout << "rear_insert" << endl;
+    head = tail = new dnode<T>(item, NULL, NULL);
+    tail = head;
+    count++;
+  }
+  else
+  {
+    tail->set_next(new dnode<T>(item, tail));
+    tail = tail->next();
+    count++;
+  }
+}
+template <class T>
+void dlist<T>::rear_remove()
+{
+  {
+ head = head ->next();
+ head ->set_previous(NULL);
+ count--;
+}
+}
+template <class T>
+void dlist<T>::remove(iterator object)
+{
+
+  if (object.current == NULL)
+  {
+    cout << "This is a NULL pointer";
+    return;
+  }
+  if (object.current == head)
+  {
+    front_remove();
+    return;
+  }
+  if (object.current == tail)
+  {
+    rear_remove();
+    return;
+  }
+  if (count = 1)
+  {
+    front_remove();
+  }
+  else
+  {
+    dnode<T> *tmp, *prev, *next;
+    tmp = object.current;
+    prev = object.current->previous();
+    next = object.current->next();
+    prev->set_next(next);
+    next->set_previous(prev);
+    delete tmp;
+  }
+  count--;
+}
+template <class T>
+void dlist<T>::show()
+{
+  dnode<T> *cursor = head;
+
+  if (cursor == NULL)
+  {
+    std::cout << "There is no list." << std::endl;
+  }
+  while (cursor != NULL)
+  {
+    std::cout << cursor->data() << "\n";
+    cursor = cursor->next();
+  }
+}
+template <class T>
+void dlist<T>::reverse_show()
+{
+  dnode<T> *cursor = tail;
+  if (cursor == NULL)
+  {
+    std::cout << "There is no list." << std::endl;
+  }
+
+  while (cursor != NULL)
+  {
+    std::cout << cursor->data() << "\n";
+    cursor = cursor->previous();
+  }
+}
+template <class T>
+void dlist<T>::front_remove()
+{
+ head = head ->next();
+ head ->set_previous(NULL);
+ count--;
+}
+template <class T>
+void dlist<T>::insert_after(iterator &object, T item)
+{
+  {
+    dnode<T> *tmp = object.current;
+    if (count == 1)
+    {
+      rear_insert(item);
+      return;
+    }
+
+    if (object.current == tail)
+    {
+      rear_insert(item);
+      return;
+    }
+
+    else
+    {
+      object.current = new dnode<T>(item, object.current, object.current->next());
+      object.current->next()->set_previous(object.current);
+      object.current->previous()->set_next(object.current);
+    }
+    count++;
+  }
+}

@@ -68,7 +68,7 @@ int main(){
 		break;
 	    case 6:
 		mychecks.number_sort();
-		break;-
+		break;
 	    case 7:
 		mychecks.payto_sort();
 		break;
@@ -79,10 +79,10 @@ int main(){
 		while(cin.peek()=='\n' || cin.peek() == '\r')
 		    cin.ignore(); // clear out leftover newlines
 		getline(cin,payto_find);
-//		mychecks.show(payto_find);
+		mychecks.show(payto_find);
 		break;
 	    case 10:
-//		cout<<mychecks.average();
+		cout<<mychecks.average();
 		break;
 	    case 0:
 		cout<<"Thank you for using the Checkbook program.\n";
@@ -96,7 +96,7 @@ int main(){
 
 	ofs.open(userfile.c_str());
 	if(!ofs.fail()){
-//	    mychecks.save(ofs);
+	    mychecks.save(ofs);
 	    ofs.close();
 	}
 

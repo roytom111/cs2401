@@ -1,3 +1,9 @@
+/*******************************************************************
+    This is the implementation file for the Checkbook class. For more 
+information about the class see checkbook.h.
+	Roy Frimpong	Ohio University		Feburary 2021
+******************************************************************/
+
 #include "checkbook.h"
 #include "check.h"
 #include <cctype>
@@ -17,18 +23,19 @@ void checkbook::load_from_file(ifstream &ins)
     ins >> balance;
     cout << balance << endl;
     ins >> checknum;
+    ins >> body;
     while (!ins.eof())
     {
-        ins >> body;
         onecheck[holder] = body;
         cout << body;
         holder++;
+        ins >> body;
     }
 }
 void checkbook::deposit(double deposit)
 {
     balance = balance + deposit;
-    cout << balance;
+    cout << balance << endl;
 }
 void checkbook::write_check(std::istream &ins)
 {
@@ -40,6 +47,7 @@ void checkbook::write_check(std::istream &ins)
     cout << onecheck[holder] << endl;
     holder++;
     checknum++;
+    balance = balance - onecheck[holder].get_amount();
 }
 double checkbook::get_balance()
 {
@@ -47,7 +55,7 @@ double checkbook::get_balance()
 }
 void checkbook::show_all(std::ostream &outs)
 {
-    for (size_t i = 0; i < holder; i++)
+    for (int i = 0; i < holder; i++)
     {
         cout << onecheck[i] << endl;
     }
@@ -55,13 +63,13 @@ void checkbook::show_all(std::ostream &outs)
 void checkbook::remove(int rmnum)
 {
     Check make;
-    for (size_t i = 0; i < holder; i++)
+    for (int i = 0; i < holder; i++)
     {
         if (onecheck[i].get_num() == rmnum)
         {
             holder = holder - 1;
 
-            for (size_t j = 0; j < holder; j++)
+            for (int j = 0; j < holder; j++)
             {
                 onecheck[j] = onecheck[j + 1];
             }
@@ -70,60 +78,97 @@ void checkbook::remove(int rmnum)
 }
 void checkbook::number_sort()
 {
-    int small;
+
+    bool done = false;
+    int j;
     Check tmp;
-    for (size_t i = 0; i < holder; i++)
+    while (!done)
     {
-        small = i;
-        for (size_t j = i + 1; j < holder; j++)
+        done = true;
+        for (j = holder - 1; j > 0; --j)
         {
-            if (onecheck[j].get_num() < onecheck[small].get_num())
+            if (onecheck[j].get_num() < onecheck[j - 1].get_num())
             {
-                small = j;
+                done = false;
+                tmp = onecheck[j];
+                onecheck[j] = onecheck[j - 1];
+                onecheck[j - 1] = tmp;
             }
-            tmp = onecheck[i];
-            onecheck[i] = onecheck[j];
-            onecheck[j] = tmp;
         }
     }
 }
-void checkbook::payto_sort(){
-    int small;
+void checkbook::payto_sort()
+{
     Check tmp;
-    for (size_t i = 0; i < holder; i++)
+    int j;
+    bool done = false;
+    while (!done)
     {
-        small = i;
-        for (size_t j = i + 1; j < holder; j++)
+        done = true;
+        for (j = holder - 1; j > 0; --j)
         {
-            if (toupper(onecheck[j].get_payto().at(0)) < toupper( onecheck[small].get_payto().at(0)))
+            if (toupper(onecheck[j].get_payto().at(0)) < toupper(onecheck[j - 1].get_payto().at(0)))
             {
-                small = j;
+                done = false;
+                tmp = onecheck[j];
+                onecheck[j] = onecheck[j - 1];
+                onecheck[j - 1] = tmp;
             }
-            tmp = onecheck[i];
-            onecheck[i] = onecheck[j];
-            onecheck[j] = tmp;
         }
     }
-
 }
-void checkbook::date_sort(){
-    int small;
+void checkbook::date_sort()
+{
+    bool done = false;
+    int j;
     Check tmp;
-    for (size_t i = 0; i < holder; i++)
+    while (!done)
     {
-        small = i;
-        for (size_t j = i + 1; j < holder; j++)
+        done = true;
+        for (j = holder - 1; j > 0; --j)
         {
-            if (onecheck[j].get_date() < onecheck[small].get_date())
+            if (onecheck[j].get_date() < onecheck[j - 1].get_date())
             {
-                small = j;
+                done = false;
+                tmp = onecheck[j];
+                onecheck[j] = onecheck[j - 1];
+                onecheck[j - 1] = tmp;
             }
-            tmp = onecheck[i];
-            onecheck[i] = onecheck[j];
-            onecheck[j] = tmp;
         }
     }
-
-
-
+}
+void checkbook::show(string payto_find)
+{
+    double amount;
+    for (int i = 0; i < holder; i++)
+    {
+        if (onecheck[i].get_payto() == payto_find)
+        {
+            amount += onecheck[i].get_amount();
+            cout << onecheck[i];
+        }
+    }
+}
+double checkbook::average()
+{
+    double amount;
+    double average;
+    for (int i = 0; i < holder; i++)
+    {
+        amount += onecheck[i].get_amount();
+    }
+    average = amount / holder;
+    return average;
+}
+void checkbook::save(std::ofstream &outs)
+{
+    outs << balance << endl;
+    outs << checknum << endl;
+    for (int i = 0; i < holder; i++)
+    {
+        outs << onecheck[i].get_amount() << endl;
+        outs << onecheck[i].get_date() << endl;
+        outs << onecheck[i].get_num() << endl;
+        outs << onecheck[i].get_payto() << endl;
+    }
 }

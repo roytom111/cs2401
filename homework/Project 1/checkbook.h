@@ -1,3 +1,17 @@
+/***********************************************************************
+    This is the header file for a check a checkbook class. this checkbook
+    class hold all the information for a normal checkbook. specifically 
+    this checkbook has a balance, holder and checknumber. the balance 
+    would show how much you have in your checkbook. the holder would 
+    keep track of how many have been written and the checknumber is given 
+    by the computer and keeps track of the information written in those \
+    checks.
+    
+  	Roy Frimpong	Ohio University		Feburary 2021
+************************************************************************/
+
+
+
 #include <iostream>
 #include <fstream>
 #include <ctype.h>
@@ -18,7 +32,10 @@ public:
     void number_sort();
     void payto_sort();
     void date_sort();
-    void show(std:: istream payto_find);
+    void show(std::string payto_find);
+    void save(std::ofstream& ofs);
+    double average();
+
     // Mutator function
     void set_deposit();
 private:
